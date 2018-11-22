@@ -58,13 +58,17 @@ class EntityWasSaved
 
             if ($this->trash->count()) {
                 // Fetch the first item's class to know the model used for deletion
-                $class = get_class($this->trash->first());
+                $trashItemModel = $this->trash->first();
+                $class = get_class($trashItemModel);
 
                 // Let's batch delete all the values based on their ids
                 $class::whereIn('id', $this->trash->pluck('id'))->delete();
 
                 // Now, empty the trash
                 $this->trash = collect([]);
+
+                // Clear cache for relation
+                $trashItemModel::forgetCache();
             }
         } catch (Exception $e) {
             // Rollback transaction on failure
