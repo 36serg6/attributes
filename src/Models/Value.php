@@ -85,4 +85,9 @@ abstract class Value extends Model
     {
         return new ValueCollection($models);
     }
+
+    public function isEmpty()
+    {
+        return empty($this->content);
+    }
 }
